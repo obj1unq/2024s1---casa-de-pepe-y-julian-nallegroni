@@ -29,3 +29,18 @@ Verificar que el saldo de la cuenta con gastos queda en 50 pesos, la cuenta corr
 	assert.equals(300, cuentaCorriente.saldo())
 	assert.equals(350, cuentaCombinada.saldo())
 }
+
+test "la casa tiene 50% de los víveres, necesita 100 pesos para reparaciones, tiene asociada la cuenta corriente con 1000 pesos de saldo 
+		y una estrategia de ahorro Full. Al hacer un mantenimiento de la casa:
+
+Como la casa no está en orden, aumenta 40% de sus víveres gastando 40 * 5 = 200 pesos.
+Si bien luego les alcanza para hacer las reparaciones, no sobrarían 1000 pesos, así que no se hacen.
+Verificar que la casa queda con 90% de víveres, mantiene los 100 pesos para reparaciones, y la cuenta corriente queda con 800 pesos." {
+	casaDePepeYJulian.romperAlgoDe(100)
+	cuentaCorriente.depositar(1000)
+	casaDePepeYJulian.estrategiaAhorro(full)
+	casaDePepeYJulian.hacerMantenimiento()
+	assert.equals(90, casaDePepeYJulian.porcentajeViveres())
+	assert.equals(800, casaDePepeYJulian.saldo())
+	assert.equals(100, casaDePepeYJulian.costoReparaciones())
+}
