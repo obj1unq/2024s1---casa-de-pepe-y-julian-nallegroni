@@ -27,7 +27,7 @@ object casaDePepeYJulian {
 }
 
 object cuentaCorriente {
-	var saldo = 500
+	var saldo = 0
 	
 	method saldo() {
 		return saldo
@@ -62,10 +62,10 @@ object cuentaConGastos {
 object cuentaCombinada {
 	var property cuentaPrimaria = cuentaConGastos
 	var property cuentaSecundaria = cuentaCorriente
-	const saldo = cuentaPrimaria.saldo() + cuentaSecundaria.saldo()
+	var saldo = 0
 	
 	method saldo() {
-		return saldo
+		return cuentaPrimaria.saldo() + cuentaSecundaria.saldo()
 	}
 	
 	method depositar(cantidad) {
@@ -73,12 +73,10 @@ object cuentaCombinada {
 	}
 	
 	method extraer(cantidad) {
-		// Acá intenté usar la subtarea "tieneSaldoSuficiente" pero me tiraba varios errores q no pude solucionar
 		return if (cuentaPrimaria.saldo() >= cantidad) cuentaPrimaria.extraer(cantidad) else cuentaSecundaria.extraer(cantidad)
 	}
 	
-	method tieneSaldoSuficiente(cuenta, cantidad) {
-		return cuenta.saldo() >= cantidad
-	}
-	
 }
+	
+
+

@@ -6,3 +6,26 @@ test "Hacer que se rompa algo de 1000 pesos de la casa, aumentando el monto de r
 	assert.equals(true, casaDePepeYJulian.necesitaReparaciones())
 	assert.equals(false, casaDePepeYJulian.estaEnOrden())
 }
+
+test "para una cuenta vacía con 20 pesos de costo por operación, si se deposita 1000 pesos, el saldo queda en 980 pesos." {
+	cuentaConGastos.costoOperacion(20)
+	cuentaConGastos.depositar(1000)
+	assert.equals(980, cuentaConGastos.saldo())
+}
+
+test "Con la cuenta combinada así: La cuenta primaria es la cuenta con gastos con 50 pesos de costo de operación y la secundaria es la cuenta corriente, 
+		ya con 500 pesos de saldo. Luego,
+
+Se depositan 100 pesos en la cuenta combinada (van a la cuenta con gastos, porque es la primaria, depositándose 50 pesos efectivos).
+Si se extraen 200 pesos (salen de la cuenta corriente, ya que a la primaria no le alcanza, dejándola en 300 pesos).
+Verificar que el saldo de la cuenta con gastos queda en 50 pesos, la cuenta corriente con 300 pesos y la combindada con 350 pesos." {
+	// Seteo las configuraciones
+	cuentaConGastos.costoOperacion(50)
+	cuentaCorriente.depositar(500)
+	// Sigo cada testeo
+	cuentaCombinada.depositar(100)
+	cuentaCombinada.extraer(200)
+	assert.equals(50, cuentaConGastos.saldo())
+	assert.equals(300, cuentaCorriente.saldo())
+	assert.equals(350, cuentaCombinada.saldo())
+}
