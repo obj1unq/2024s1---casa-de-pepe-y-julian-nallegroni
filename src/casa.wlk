@@ -20,152 +20,151 @@ object casaDePepeYJulian {
 	method romperAlgoDe(valor) {
 		costoReparaciones += valor
 	}
-	
+
 	method gastar(cantidad) {
 		cuentaGastos.extraer(cantidad)
 	}
-	
+
 	method estrategiaAhorro(_estrategiaAhorro) {
 		estrategiaAhorro = _estrategiaAhorro
 	}
-	
+
 	method hacerMantenimiento() {
-		estrategiaAhorro.mantenimiento()
+		estrategiaAhorro.mantenimiento(self)
 	}
 
 	method saldo() {
 		return cuentaGastos.saldo()
 	}
-	
+
 	method costoReparaciones() {
 		return costoReparaciones
 	}
+
 }
 
 object minimoEIndispensable {
-	var casa = casaDePepeYJulian
+
 	var calidad = 2
-	
+
 	method calidad(_calidad) {
 		calidad = _calidad
 	}
-	
-	method mantenimiento() {
-		if (not casa.tieneViveresSuficientes()) self.comprarMinimosViveres()
+
+	method mantenimiento(casa) {
+		if (not casa.tieneViveresSuficientes()) self.comprarMinimosViveres(casa)
 	}
-	
-	method comprarMinimosViveres() {
-		casa.gastar(self.porcentajeMinimoNecesario() * calidad)
+
+	method comprarMinimosViveres(casa) {
+		casa.gastar(self.porcentajeMinimoNecesario(casa) * calidad)
 		casa.porcentajeViveres(40)
 	}
-	
-	method porcentajeMinimoNecesario() {
+
+	method porcentajeMinimoNecesario(casa) {
 		return 40 - casa.porcentajeViveres()
 	}
+
 }
 
 object full {
-	var casa = casaDePepeYJulian
+
 	const calidad = 5
-	
-	
-	method mantenimiento() {
-		self.llenarSiEstaEnOrden()
-		self.repararSiAlcanzaYSobran1000()
+
+	method mantenimiento(casa) {
+		self.llenarSiEstaEnOrden(casa)
+		if (self.alcanzaParaReparacionesYSobra(casa, 1000)) {
+			self.hacerReparaciones(casa)
+		}
 	}
-	
-	method llenarSiEstaEnOrden() {
-		if (casa.estaEnOrden()) self.llenarViveres() else self.aumentarEn40Viveres()
+
+	method llenarSiEstaEnOrden(casa) {
+		if (casa.estaEnOrden()) self.llenarViveres(casa) else self.aumentarViveresEn(40, casa)
 	}
-	
-	method llenarViveres() {
-		casa.gastar(self.porcentajeNecesarioParaLlenar() * calidad)
+
+	method llenarViveres(casa) {
+		casa.gastar(self.porcentajeNecesarioParaLlenar(casa) * calidad)
 		casa.porcentajeViveres(100)
 	}
-	
-	method porcentajeNecesarioParaLlenar() {
+
+	method porcentajeNecesarioParaLlenar(casa) {
 		return 100 - casa.porcentajeViveres()
 	}
-	
-	method aumentarEn40Viveres() {
-		casa.gastar(40 * calidad)
+
+	method aumentarViveresEn(cantidad, casa) {
+		casa.gastar(cantidad * calidad)
 		casa.porcentajeViveres(casa.porcentajeViveres() + 40)
 	}
-	
-	method repararSiAlcanzaYSobran1000() {
-		if (self.alcanzaParaReparacionesYSobra1000()) self.hacerReparaciones()
+
+	method alcanzaParaReparacionesYSobra(casa, cantidad) {
+		return self.saldoDescontandoReparaciones(casa) > cantidad
 	}
-	
-	method alcanzaParaReparacionesYSobra1000() {
-		return self.saldoDescontandoReparaciones() > 1000
-	}
-	
-	method saldoDescontandoReparaciones() {
+
+	method saldoDescontandoReparaciones(casa) {
 		return casa.saldo() - casa.costoReparaciones()
 	}
-	
-	method hacerReparaciones() {
+
+	method hacerReparaciones(casa) {
 		casa.gastar(casa.costoReparaciones())
 	}
-	
-	
-	
-	
+
 }
 
-
 object cuentaCorriente {
+
 	var saldo = 0
-	
+
 	method saldo() {
 		return saldo
 	}
-	
+
 	method depositar(cantidad) {
 		saldo += cantidad
 	}
-	
+
 	method extraer(cantidad) {
 		saldo -= cantidad
 	}
+
 }
 
 object cuentaConGastos {
+
 	var saldo = 0
 	var property costoOperacion = 50
-	
+
 	method saldo() {
 		return saldo
 	}
-	
+
 	method depositar(cantidad) {
 		saldo += cantidad - costoOperacion
 	}
-	
+
 	method extraer(cantidad) {
 		saldo -= cantidad
 	}
+
 }
 
 object cuentaCombinada {
+
 	var property cuentaPrimaria = cuentaConGastos
 	var property cuentaSecundaria = cuentaCorriente
 	var saldo = 0
-	
+
 	method saldo() {
 		return cuentaPrimaria.saldo() + cuentaSecundaria.saldo()
 	}
-	
+
 	method depositar(cantidad) {
 		cuentaPrimaria.depositar(cantidad)
 	}
-	
+
 	method extraer(cantidad) {
 		return if (cuentaPrimaria.saldo() >= cantidad) cuentaPrimaria.extraer(cantidad) else cuentaSecundaria.extraer(cantidad)
 	}
-	
-}
-	
-/*  Para que al agregar una nueva casa se puedan utilizar las mismas estrategias en ella, basicamente debe entender los mismos mensajes
- 	que la casaDePepeYJulian */
 
+}
+
+/*  Para que al agregar una nueva casa se puedan utilizar las mismas estrategias en ella, basicamente debe entender los mismos mensajes
+ que la casaDePepeYJulian */
